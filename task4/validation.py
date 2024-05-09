@@ -1,5 +1,7 @@
 """ validation module """
 import re
+from errors import error_name_validation, error_phone_validation, \
+                    error_name_doesnt_exists, error_name_exists
 
 
 def input_error(func):
@@ -10,13 +12,17 @@ def input_error(func):
             return func(*args, **kwargs)
         except ValueError:
             return ["Give me name and phone please."]
+        except IndexError:
+            return ["Index error"]
+        except KeyError:
+            return ["Key Error"]
 
     return inner
 
 
 def validation_for_add_function(func):
     """ 
-    decorator - validation params for "add" function
+    decorator - validation params for "ADD" function
      - contact_name
      - phone_number
      - contact_name exists
@@ -27,21 +33,31 @@ def validation_for_add_function(func):
         """ handle params """
 
         try:
-            # str, str <- list <- tuple
-            name, phone = data = args[0]
+            # ([name, phone], {contact book})
+            data, contacts = args
+            name, phone = data
 
             # check first value - name
-            if not validation_contact_name(name):
-                raise ValueError('Invalid contact_name was passed')
+            if not check_contact_name(name):
+                raise ValueError(
+                    error_name_validation()
+                )
             # check second value - phone
-            elif not validation_phone_number(phone):
-                raise ValueError('Invalid phone_number was passed')
+            elif not check_phone_number(phone):
+                raise ValueError(
+                    error_phone_validation()
+                )
+            # if contact_name already exists
+            elif check_contact_name_exists(name, contacts):
+                raise ValueError(
+                    error_name_exists(name)
+                )
             else:
                 pass
 
             return func(*args, **kwargs)
         except ValueError as e:
-            return f'Give me contact_name and phone_number please ({e})'
+            return f'{e}'
         except TypeError:
             return 'Please enter "contact_name" and "phone_number"'
 
@@ -50,7 +66,7 @@ def validation_for_add_function(func):
 
 def validation_for_change_function(func):
     """ 
-    decorator - validation params for "change" function
+    decorator - validation params for "CHANGE" function
      - contact_name
      - phone_number
      - contact_name exists
@@ -59,23 +75,32 @@ def validation_for_change_function(func):
 
     def wrapper(*args, **kwargs):
         """ handle params """
-
         try:
-            # str, str <- list <- tuple
-            name, phone = data = args[0]
+            # ([name, phone], {contact book})
+            data, contacts = args
+            name, phone = data
 
             # check first value - name
-            if not validation_contact_name(name):
-                raise ValueError('Invalid contact_name was passed')
+            if not check_contact_name(name):
+                raise ValueError(
+                    error_name_validation()
+                )
             # check second value - phone
-            elif not validation_phone_number(phone):
-                raise ValueError('Invalid phone_number was passed')
+            elif not check_phone_number(phone):
+                raise ValueError(
+                    error_phone_validation()
+                )
+            # check if contact_name doesnt exists
+            elif not check_contact_name_exists(name, contacts):
+                raise ValueError(
+                    error_name_doesnt_exists(name)
+                )
             else:
                 pass
 
             return func(*args, **kwargs)
         except ValueError as e:
-            return f'Give me contact_name and phone_number please ({e})'
+            return f'{e}'
         except TypeError:
             return 'Please enter "contact_name" and "phone_number"'
 
@@ -92,20 +117,28 @@ def validation_for_show_function(func):
     def wrapper(*args, **kwargs):
         """ handle params """
         try:
-            # str, str <- list <- tuple
-            name = data = args[0]
-
+            # ([name], {contact book})
+            data, contacts = args
+            name, = data
+            
             # check contact name
             if not check_contact_name(name):
-                raise ValueError('Invalid phone_number was passed')
+                raise ValueError(
+                    error_name_validation()
+                )
+            # check if contact name doesnt exists
+            elif not check_contact_name_exists(name, contacts):
+                raise ValueError(
+                    error_name_doesnt_exists(name)
+                )
             else:
                 pass
 
             return func(*args, **kwargs)
         except ValueError as e:
-            return f'Give me contact_name and phone_number please ({e})'
+            return f'{e}'
         except TypeError:
-            return 'Please enter "contact_name" and "phone_number"'
+            return 'Please enter "contact_name"'
 
     return wrapper
 
@@ -129,15 +162,18 @@ def check_phone_number(phone: str) -> bool:
 
 
 def check_contact_name_exists(name: str, contacts: list) -> bool:
-    pass
+    """ check if contact_name exists into contact book """
 
-
-def check_contact_name_doesnt_exists(name: str, contacts: list) -> bool:
-    pass
+    if name in contacts.keys():
+        return True
+    else:
+        return False
 
 
 def check_phone_number_exists(phone: str, contacts: list) -> bool:
-    pass
+    """ check if phone_number exists into contact book """
 
-def check_phone_number_doesnt_exists(phone: str, contacts: list) -> bool:
-    pass
+    if phone in contacts.values():
+        return True
+    else:
+        return False

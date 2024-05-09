@@ -47,10 +47,10 @@ if __name__ == "__main__":
     print("Welcome to the assistant bot!\n\n")
     print("List of commands")
     print_with_color("1. FGBS hello BESR say hello to the assistant")
-    print_with_color("2. FGBS add [contact name] [phone_number] BESR adds contact name and phone number to memory")
-    print_with_color("3. FGBS change [contact_name] [new phone number] BESR edits the contact's phone number")
+    print_with_color("2. FGBS add [contact_name] [phone_number] BESR adds contact name and phone number to memory")
+    print_with_color("3. FGBS change [contact_name] [new_phone_number] BESR edits the contact's phone number")
     print_with_color("4. FGBS phone [contact_name] BESR displays the contact's phone number")
-    print_with_color("5. FGBS all BESR show phone book contacts")
+    print_with_color("5. FGBS all BESR show contacts phone book")
     print_with_color("6. FGBS close BESR or FGBS exit BESR exit from the assistant\n\n")
 
     # main
