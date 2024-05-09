@@ -1,7 +1,6 @@
 """ sys modules """
 from utils import print_with_color, print_banner
 from handler import parse_input, add_contact, change_contact, show_all, show_phone
-import sys
 
 
 # Main
@@ -9,12 +8,9 @@ def main():
     """ bot commands hendler """
     contacts = {}
     while True:
+
         user_input = input("Enter a command: ")
-        try:
-            command, *args = parse_input(user_input)
-        except ValueError as e:
-            print(f"Invalid command, please run againts ({e})")
-            sys.exit(0)
+        command, *args = parse_input(user_input)
 
         # close, exit
         if  command in ["close", "exit"]:
@@ -43,7 +39,7 @@ def main():
 
         # something else
         else:
-            print("Invalid command.")
+            print_with_color("Invalid command.", 'yellow')
 
 if __name__ == "__main__":
 

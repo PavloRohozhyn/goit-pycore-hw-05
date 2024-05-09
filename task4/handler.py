@@ -1,10 +1,12 @@
 """
 module handler
 """
-from validation import validation_name, validation_phone
-from errors import error_args, error_item_exist, error_item_doesnt_exist, error_validation_name, error_validation_phone
+
+from validation import input_error, validation_for_add_function, \
+    validation_for_change_function, validation_for_show_function
 from utils import print_with_color
 
+@input_error
 def parse_input(user_input):
     """ parse input data """
 
@@ -13,51 +15,25 @@ def parse_input(user_input):
     cmd = cmd.strip().lower()
     return cmd, *args
 
-
+@validation_for_add_function
 def add_contact(args, contacts) -> str | Exception:
     """ add contact """
 
-    try:
-        name = args[0]
-        phone = args[1]
-    except IndexError as e:
-        return error_args(e)
-    # validation name
-    if not validation_name(name):
-        return error_validation_name(name)
-    # check if name exists
-    if name in contacts:
-        return error_item_exist(name)
-    # validation phone
-    if not validation_phone(phone):
-        return error_validation_phone(phone)
+    name, phone = args
     # add contact
     contacts[name] = phone
     return "Contact added"
 
-
+@validation_for_change_function
 def change_contact(args, contacts) -> str | Exception:
     """ change contact """
 
-    try:
-        name = args[0]
-        phone = args[1]
-    except IndexError as e:
-        return error_args(e)
-    # validation name
-    if not validation_name(name):
-        return error_validation_name(name)
-    # check if exists contact
-    if not name in contacts:
-        return error_item_doesnt_exist(name)
-    # validation phone
-    if not validation_phone(phone):
-        return error_validation_phone(phone)
-    # change contact    
+    name, phone = args
     contacts[name] = phone
     return "Contact updated."
 
 
+@validation_for_show_function
 def show_phone(args, contacts) :
     """ show phone """
 
